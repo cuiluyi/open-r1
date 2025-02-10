@@ -14,8 +14,8 @@ def accuracy_reward(completions, solution, **kwargs):
     for content, sol in zip(contents, solution):
         gold_parsed = parse(
             sol,
-            extraction_mode="first_match",
             extraction_config=[LatexExtractionConfig()],
+            extraction_mode="first_match",
         )
         if len(gold_parsed) != 0:
             # We require the answer to be provided in correct latex (no malformed operators)
