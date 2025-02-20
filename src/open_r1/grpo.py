@@ -35,6 +35,7 @@ from open_r1.rewards import (
 from open_r1.utils.callbacks import get_callbacks
 from trl import GRPOTrainer, ModelConfig, ScriptArguments, TrlParser, get_peft_config
 
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +142,7 @@ def main(script_args, training_args, model_args):
 
     # Load the dataset
     dataset = load_dataset(script_args.dataset_name, name=script_args.dataset_config)
+    dataset['train'] = dataset['train'].shuffle(seed=42).select(range(20000))
 
     # Get reward functions
     REWARD_FUNCS_REGISTRY = {
@@ -226,7 +228,7 @@ def main(script_args, training_args, model_args):
 
     # Save everything else on main process
     kwargs = {
-        "dataset_name": script_args.dataset_name,
+        "dataset_name": "/".join(Path(script_args.dataset_name).parts[-2:]),
         "tags": ["open-r1"],
     }
     if trainer.accelerator.is_main_process:
