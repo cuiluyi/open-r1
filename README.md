@@ -189,7 +189,7 @@ We use `lighteval` to evaluate models, with custom tasks defined in `src/open_r1
 # MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
 MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=32768,gpu_memory_utilisation=0.8"
-OUTPUT_DIR=data/evals/$MODEL
+OUTPUT_DIR=data/evals/$(basename $MODEL)
 
 # AIME 2024
 TASK=aime24
@@ -221,10 +221,11 @@ To increase throughput across multiple GPUs, use _data parallel_ as follows:
 
 ```shell
 NUM_GPUS=8
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilisation=0.8"
 TASK=aime24
-OUTPUT_DIR=data/evals/$MODEL
+OUTPUT_DIR=data/evals/$(basename $MODEL)
 
 lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
     --custom-tasks src/open_r1/evaluate.py \
@@ -236,10 +237,11 @@ For large models which require sharding across GPUs, use _tensor parallel_ and r
 
 ```shell
 NUM_GPUS=8
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilisation=0.8"
 TASK=aime24
-OUTPUT_DIR=data/evals/$MODEL
+OUTPUT_DIR=data/evals/$basename $MODEL)
 
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
