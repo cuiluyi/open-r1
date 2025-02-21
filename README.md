@@ -44,7 +44,7 @@ We will use the DeepSeek-R1 [tech report](https://github.com/deepseek-ai/DeepSee
 ## Installation
 
 > [!CAUTION]
-> **Libraries rely on CUDA 12.4.** If you see errors related to segmentation faults, double check the version your system is running with `nvcc --version`.
+> <font color='red'>**Libraries rely on CUDA 12.4.**</font> If you see errors related to segmentation faults, double check the version your system is running with `nvcc --version`.
 
 To run the code in this project, first, create a Python virtual environment using e.g. `uv`.
 To install `uv`, follow the [UV Installation Guide](https://docs.astral.sh/uv/getting-started/installation/).
@@ -186,7 +186,8 @@ You can scale the number of nodes by increasing the `--nodes` flag.
 We use `lighteval` to evaluate models, with custom tasks defined in `src/open_r1/evaluate.py`. For models which fit on a single GPU, run:
 
 ```shell
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=32768,gpu_memory_utilisation=0.8"
 OUTPUT_DIR=data/evals/$MODEL
 
@@ -214,6 +215,7 @@ lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
 
 > [!IMPORTANT]
 > You must set `max_model_length=32768` in the `vllm` command to align with the `generation_size` we define per eval. Without this, `lighteval` will throw an error.
+> Reference: [lighteval doc](https://huggingface.co/docs/lighteval/v0.7.0/en/use-vllm-as-backend#use-vllm-as-backend)
 
 To increase throughput across multiple GPUs, use _data parallel_ as follows:
 
