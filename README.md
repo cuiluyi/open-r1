@@ -186,6 +186,7 @@ You can scale the number of nodes by increasing the `--nodes` flag.
 We use `lighteval` to evaluate models, with custom tasks defined in `src/open_r1/evaluate.py`. For models which fit on a single GPU, run:
 
 ```shell
+export CUDA_VISIBLE_DEVICES="7"   # specify the single GPU ID
 # MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
 MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
 MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=32768,gpu_memory_utilisation=0.8"
