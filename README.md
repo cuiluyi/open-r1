@@ -3,18 +3,24 @@
 *A fully open reproduction of DeepSeek-R1. This repo is a work in progress, let's build it together!*
 
 **Table of Contents**  
-1. [Overview](#overview)  
-2. [Plan of attack](#plan-of-attack)  
-3. [Installation](#installation)  
-4. [Training models](#training-models)  
-   - [SFT](#sft)  
-   - [GRPO](#grpo)  
-5. [Evaluating models](#evaluating-models)  
-6. [Reproducing Deepseek's evaluation results](#reproducing-deepseeks-evaluation-results)  
-7. [Data generation](#data-generation)  
-   - [Generate data from a smol distilled R1 model](#generate-data-from-a-smol-distilled-r1-model)  
-   - [Generate data from DeepSeek-R1](#generate-data-from-deepseek-r1)  
-8. [Contributing](#contributing)
+- [Open R1](#open-r1)
+  - [Overview](#overview)
+    - [Plan of attack](#plan-of-attack)
+  - [Installation](#installation)
+  - [Training models](#training-models)
+    - [SFT](#sft)
+    - [GRPO](#grpo)
+      - [👨‍💻 Training with a code interpreter](#-training-with-a-code-interpreter)
+    - [Launching jobs on a Slurm cluster](#launching-jobs-on-a-slurm-cluster)
+  - [Evaluating models](#evaluating-models)
+  - [Reproducing Deepseek's evaluation results](#reproducing-deepseeks-evaluation-results)
+    - [MATH-500](#math-500)
+    - [GPQA Diamond](#gpqa-diamond)
+    - [LiveCodeBench](#livecodebench)
+  - [Data generation](#data-generation)
+    - [Generate data from a smol distilled R1 model](#generate-data-from-a-smol-distilled-r1-model)
+    - [Generate data from DeepSeek-R1](#generate-data-from-deepseek-r1)
+  - [Contributing](#contributing)
 
 ## Overview
 
@@ -44,14 +50,16 @@ We will use the DeepSeek-R1 [tech report](https://github.com/deepseek-ai/DeepSee
 ## Installation
 
 > [!CAUTION]
-> Libraries rely on CUDA 12.4. If you see errors related to segmentation faults, double check the version your system is running with `nvcc --version`.
+> <font color='red'>**Libraries rely on CUDA 12.4.**</font> If you see errors related to segmentation faults, double check the version your system is running with `nvcc --version`.
 
 To run the code in this project, first, create a Python virtual environment using e.g. `uv`.
 To install `uv`, follow the [UV Installation Guide](https://docs.astral.sh/uv/getting-started/installation/).
 
 
 ```shell
-uv venv openr1 --python 3.11 && source openr1/bin/activate && uv pip install --upgrade pip
+conda create -n openr1 python=3.11 -y
+conda activate openr1
+pip install --upgrade
 ```
 
 > [!TIP]
@@ -60,14 +68,13 @@ uv venv openr1 --python 3.11 && source openr1/bin/activate && uv pip install --u
 Next, install vLLM and FlashAttention:
 
 ```shell
-uv pip install vllm==0.7.2
-uv pip install setuptools && uv pip install flash-attn --no-build-isolation
+pip install vllm==0.7.1
 ```
 
 This will also install PyTorch `v2.5.1` and it is **very important** to use this version since the vLLM binaries are compiled for it. You can then install the remaining dependencies for your specific use case via `pip install -e .[LIST OF MODES]`. For most contributors, we recommend:
 
 ```shell
-GIT_LFS_SKIP_SMUDGE=1 uv pip install -e ".[dev]"
+pip install -e ".[dev]"
 ```
 
 Next, log into your Hugging Face and Weights and Biases accounts as follows:
@@ -236,9 +243,11 @@ You can scale the number of nodes by increasing the `--nodes` flag.
 We use `lighteval` to evaluate models, with custom tasks defined in `src/open_r1/evaluate.py`. For models which fit on a single GPU, run:
 
 ```shell
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=32768,gpu_memory_utilization=0.8,generation_parameters={max_new_tokens:32768,temperature:0.0}"
-OUTPUT_DIR=data/evals/$MODEL
+export CUDA_VISIBLE_DEVICES="7"   # specify the single GPU ID
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,max_model_length=32768,gpu_memory_utilisation=0.8"
+OUTPUT_DIR=data/evals/$(basename $MODEL)
 
 # AIME 2024
 TASK=aime24
@@ -264,15 +273,17 @@ lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
 
 > [!IMPORTANT]
 > You must set `max_model_length=32768` in the `vllm` command to align with the `generation_size` we define per eval. Without this, `lighteval` will throw an error.
+> Reference: [lighteval doc](https://huggingface.co/docs/lighteval/v0.7.0/en/use-vllm-as-backend#use-vllm-as-backend)
 
 To increase throughput across multiple GPUs, use _data parallel_ as follows:
 
 ```shell
 NUM_GPUS=8
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilization=0.8,generation_parameters={max_new_tokens:32768,temperature:0.0}"
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,data_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilisation=0.8"
 TASK=aime24
-OUTPUT_DIR=data/evals/$MODEL
+OUTPUT_DIR=data/evals/$(basename $MODEL)
 
 lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
     --custom-tasks src/open_r1/evaluate.py \
@@ -284,10 +295,11 @@ For large models which require sharding across GPUs, use _tensor parallel_ and r
 
 ```shell
 NUM_GPUS=8
-MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
-MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilization=0.8,generation_parameters={max_new_tokens:32768,temperature:0.0}"
+# MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+MODEL=/data/cuiluyi/open-r1/data/Qwen2.5-1.5B-Open-R1-GRPO
+MODEL_ARGS="pretrained=$MODEL,dtype=bfloat16,tensor_parallel_size=$NUM_GPUS,max_model_length=32768,gpu_memory_utilisation=0.8"
 TASK=aime24
-OUTPUT_DIR=data/evals/$MODEL
+OUTPUT_DIR=data/evals/$basename $MODEL)
 
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 lighteval vllm $MODEL_ARGS "custom|$TASK|0|0" \
@@ -326,13 +338,13 @@ make evaluate MODEL=deepseek-ai/DeepSeek-R1-Distill-Qwen-32B TASK=aime24 PARALLE
 We are able to reproduce Deepseek's reported results on the MATH-500 benchmark within ~1-3 standard deviations:
 
 | Model                         | MATH-500 (🤗 LightEval) | MATH-500 (DeepSeek Reported) |
-|:------------------------------|:-----------------------:|:----------------------------:|
-| DeepSeek-R1-Distill-Qwen-1.5B |          81.2           |             83.9             |
-| DeepSeek-R1-Distill-Qwen-7B   |          91.8           |             92.8             |
-| DeepSeek-R1-Distill-Qwen-14B  |          94.2           |             93.9             |
-| DeepSeek-R1-Distill-Qwen-32B  |          95.0           |             94.3             |
-| DeepSeek-R1-Distill-Llama-8B  |          85.4           |             89.1             |
-| DeepSeek-R1-Distill-Llama-70B |          93.4           |             94.5             |
+| :---------------------------- | :--------------------: | :--------------------------: |
+| DeepSeek-R1-Distill-Qwen-1.5B |          81.2          |             83.9             |
+| DeepSeek-R1-Distill-Qwen-7B   |          91.8          |             92.8             |
+| DeepSeek-R1-Distill-Qwen-14B  |          94.2          |             93.9             |
+| DeepSeek-R1-Distill-Qwen-32B  |          95.0          |             94.3             |
+| DeepSeek-R1-Distill-Llama-8B  |          85.4          |             89.1             |
+| DeepSeek-R1-Distill-Llama-70B |          93.4          |             94.5             |
 
 To reproduce these results use the following command:
 
@@ -359,13 +371,13 @@ python scripts/run_benchmarks.py --model-id {model_id}  --benchmarks math_500
 We are able to reproduce Deepseek's reported results on the GPQA Diamond benchmark within ~1-3 standard deviations:
 
 | Model                         | GPQA Diamond (🤗 LightEval) | GPQA Diamond (DeepSeek Reported) |
-|:------------------------------|:---------------------------:|:--------------------------------:|
-| DeepSeek-R1-Distill-Qwen-1.5B |            33.3             |               33.8               |
-| DeepSeek-R1-Distill-Qwen-7B   |            48.4             |               49.1               |
-| DeepSeek-R1-Distill-Qwen-14B  |            55.6             |               59.1               |
-| DeepSeek-R1-Distill-Qwen-32B  |            58.6             |               62.1               |
-| DeepSeek-R1-Distill-Llama-8B  |            51.0             |               49.0               |
-| DeepSeek-R1-Distill-Llama-70B |            65.2             |               65.2               |
+| :---------------------------- | :------------------------: | :------------------------------: |
+| DeepSeek-R1-Distill-Qwen-1.5B |            33.3            |               33.8               |
+| DeepSeek-R1-Distill-Qwen-7B   |            48.4            |               49.1               |
+| DeepSeek-R1-Distill-Qwen-14B  |            55.6            |               59.1               |
+| DeepSeek-R1-Distill-Qwen-32B  |            58.6            |               62.1               |
+| DeepSeek-R1-Distill-Llama-8B  |            51.0            |               49.0               |
+| DeepSeek-R1-Distill-Llama-70B |            65.2            |               65.2               |
 
 To reproduce these results use the following command:
 
