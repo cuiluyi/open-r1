@@ -179,3 +179,5 @@ wandb/
 logs/
 eval_results/
 results/
+
+.vscode/
