@@ -1,0 +1,621 @@
+(openr1) cuiluyi@G168:~/open-r1$ lighteval vllm $MODEL_ARGS "lighteval|$TASK|0|0"     --use-chat-template     --output-dir $OUTPUT_DIR
+[2025-05-05 20:53:54,532] [    INFO]: PyTorch version 2.6.0 available. (config.py:54)
+[2025-05-05 20:53:57,355] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+INFO 05-05 20:53:58 [__init__.py:239] Automatically detected platform cuda.
+[2025-05-05 20:53:59,173] [    INFO]: --- LOADING MODEL --- (pipeline.py:188)
+[2025-05-05 20:54:06,011] [    INFO]: This model supports multiple tasks: {'embed', 'reward', 'generate', 'score', 'classify'}. Defaulting to 'generate'. (config.py:600)
+[2025-05-05 20:54:06,011] [    INFO]: Chunked prefill is enabled with max_num_batched_tokens=8192. (config.py:1780)
+INFO 05-05 20:54:10 [__init__.py:239] Automatically detected platform cuda.
+INFO 05-05 20:54:12 [core.py:61] Initializing a V1 LLM engine (v0.8.3) with config: model='/data/cuiluyi/resources/models/LuyiCui/DeepSeek-R1-Distill-Qwen-1.5B-DPO/', speculative_config=None, tokenizer='/data/cuiluyi/resources/models/LuyiCui/DeepSeek-R1-Distill-Qwen-1.5B-DPO/', skip_tokenizer_init=False, tokenizer_mode=auto, revision=main, override_neuron_config=None, tokenizer_revision=main, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=LoadFormat.AUTO, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto,  device_config=cuda, decoding_config=DecodingConfig(guided_decoding_backend='xgrammar', reasoning_backend=None), observability_config=ObservabilityConfig(show_hidden_metrics=False, otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=1234, served_model_name=/data/cuiluyi/resources/models/LuyiCui/DeepSeek-R1-Distill-Qwen-1.5B-DPO/, num_scheduler_steps=1, multi_step_stream_outputs=True, enable_prefix_caching=True, chunked_prefill_enabled=True, use_async_output_proc=True, disable_mm_preprocessor_cache=False, mm_processor_kwargs=None, pooler_config=None, compilation_config={"level":3,"custom_ops":["none"],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output"],"use_inductor":true,"compile_sizes":[],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"max_capture_size":512}
+WARNING 05-05 20:54:13 [utils.py:2413] Methods determine_num_available_blocks,device_config,get_cache_block_size_bytes,initialize_cache not implemented in <vllm.v1.worker.gpu_worker.Worker object at 0x7f601c138f10>
+INFO 05-05 20:54:14 [parallel_state.py:957] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0
+INFO 05-05 20:54:14 [cuda.py:221] Using Flash Attention backend on V1 engine.
+INFO 05-05 20:54:14 [gpu_model_runner.py:1258] Starting to load model /data/cuiluyi/resources/models/LuyiCui/DeepSeek-R1-Distill-Qwen-1.5B-DPO/...
+WARNING 05-05 20:54:14 [topk_topp_sampler.py:69] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  1.70it/s]
+Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:00<00:00,  1.70it/s]
+
+INFO 05-05 20:54:14 [loader.py:447] Loading weights took 0.76 seconds
+INFO 05-05 20:54:15 [gpu_model_runner.py:1273] Model loading took 3.3465 GiB and 0.891293 seconds
+INFO 05-05 20:54:20 [backends.py:416] Using cache directory: /data/cuiluyi/.cache/vllm/torch_compile_cache/bde7ff1518/rank_0_0 for vLLM's torch.compile
+INFO 05-05 20:54:20 [backends.py:426] Dynamo bytecode transform time: 5.28 s
+INFO 05-05 20:54:21 [backends.py:115] Directly load the compiled graph for shape None from the cache
+INFO 05-05 20:54:26 [monitor.py:33] torch.compile takes 5.28 s in total
+INFO 05-05 20:54:26 [kv_cache_utils.py:578] GPU KV cache size: 970,336 tokens
+INFO 05-05 20:54:26 [kv_cache_utils.py:581] Maximum concurrency for 32,768 tokens per request: 29.61x
+INFO 05-05 20:54:44 [gpu_model_runner.py:1608] Graph capturing finished in 18 secs, took 0.45 GiB
+INFO 05-05 20:54:45 [core.py:162] init engine (profile, create kv cache, warmup model) took 29.84 seconds
+[2025-05-05 20:54:45,035] [    INFO]: --- LOADING TASKS --- (pipeline.py:215)
+[2025-05-05 20:54:45,035] [    INFO]: Found 1 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/ifeval/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 6 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/tiny_benchmarks/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 1 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/mt_bench/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 4 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/mix_eval/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 5 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/olympiade_bench/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 1 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/hle/main.py (registry.py:141)
+[2025-05-05 20:54:45,035] [    INFO]: Found 21 custom tasks in /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighteval/tasks/extended/lcb/main.py (registry.py:141)
+[2025-05-05 20:54:45,038] [    INFO]: HuggingFaceH4/aime_2024 default (lighteval_task.py:187)
+[2025-05-05 20:54:45,038] [ WARNING]: Careful, the task lighteval|aime24 is using evaluation data to build the few shot examples. (lighteval_task.py:260)
+README.md: 932B [00:00, 3.91MB/s]
+╭─────────────────── Traceback (most recent call last) ───────────────────╮
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connection.py:198 in _new_conn                                        │
+│                                                                         │
+│    195 │   │   :return: New socket connection.                          │
+│    196 │   │   """                                                      │
+│    197 │   │   try:                                                     │
+│ ❱  198 │   │   │   sock = connection.create_connection(                 │
+│    199 │   │   │   │   (self._dns_host, self.port),                     │
+│    200 │   │   │   │   self.timeout,                                    │
+│    201 │   │   │   │   source_address=self.source_address,              │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/util/connection.py:85 in create_connection                            │
+│                                                                         │
+│    82 │                                                                 │
+│    83 │   if err is not None:                                           │
+│    84 │   │   try:                                                      │
+│ ❱  85 │   │   │   raise err                                             │
+│    86 │   │   finally:                                                  │
+│    87 │   │   │   # Break explicitly a reference cycle                  │
+│    88 │   │   │   err = None                                            │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/util/connection.py:73 in create_connection                            │
+│                                                                         │
+│    70 │   │   │   │   sock.settimeout(timeout)                          │
+│    71 │   │   │   if source_address:                                    │
+│    72 │   │   │   │   sock.bind(source_address)                         │
+│ ❱  73 │   │   │   sock.connect(sa)                                      │
+│    74 │   │   │   # Break explicitly a reference cycle                  │
+│    75 │   │   │   err = None                                            │
+│    76 │   │   │   return sock                                           │
+╰─────────────────────────────────────────────────────────────────────────╯
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+╭─────────────────── Traceback (most recent call last) ───────────────────╮
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connectionpool.py:787 in urlopen                                      │
+│                                                                         │
+│    784 │   │   │   response_conn = conn if not release_conn else None   │
+│    785 │   │   │                                                        │
+│    786 │   │   │   # Make the request on the HTTPConnection object      │
+│ ❱  787 │   │   │   response = self._make_request(                       │
+│    788 │   │   │   │   conn,                                            │
+│    789 │   │   │   │   method,                                          │
+│    790 │   │   │   │   url,                                             │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connectionpool.py:488 in _make_request                                │
+│                                                                         │
+│    485 │   │   │   │   new_e, (OSError, NewConnectionError, TimeoutErro │
+│    486 │   │   │   ) and (conn and conn.proxy and not conn.has_connecte │
+│    487 │   │   │   │   new_e = _wrap_proxy_error(new_e, conn.proxy.sche │
+│ ❱  488 │   │   │   raise new_e                                          │
+│    489 │   │                                                            │
+│    490 │   │   # conn.request() calls http.client.*.request, not the me │
+│    491 │   │   # urllib3.request. It also calls makefile (recv) on the  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connectionpool.py:464 in _make_request                                │
+│                                                                         │
+│    461 │   │   try:                                                     │
+│    462 │   │   │   # Trigger any extra validation we need to do.        │
+│    463 │   │   │   try:                                                 │
+│ ❱  464 │   │   │   │   self._validate_conn(conn)                        │
+│    465 │   │   │   except (SocketTimeout, BaseSSLError) as e:           │
+│    466 │   │   │   │   self._raise_timeout(err=e, url=url, timeout_valu │
+│    467 │   │   │   │   raise                                            │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connectionpool.py:1093 in _validate_conn                              │
+│                                                                         │
+│   1090 │   │                                                            │
+│   1091 │   │   # Force connect early to allow us to validate the connec │
+│   1092 │   │   if conn.is_closed:                                       │
+│ ❱ 1093 │   │   │   conn.connect()                                       │
+│   1094 │   │                                                            │
+│   1095 │   │   # TODO revise this, see https://github.com/urllib3/urlli │
+│   1096 │   │   if not conn.is_verified and not conn.proxy_is_verified:  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connection.py:704 in connect                                          │
+│                                                                         │
+│    701 │   │                                                            │
+│    702 │   │   try:                                                     │
+│    703 │   │   │   sock: socket.socket | ssl.SSLSocket                  │
+│ ❱  704 │   │   │   self.sock = sock = self._new_conn()                  │
+│    705 │   │   │   server_hostname: str = self.host                     │
+│    706 │   │   │   tls_in_tls = False                                   │
+│    707                                                                  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connection.py:213 in _new_conn                                        │
+│                                                                         │
+│    210 │   │   │   ) from e                                             │
+│    211 │   │                                                            │
+│    212 │   │   except OSError as e:                                     │
+│ ❱  213 │   │   │   raise NewConnectionError(                            │
+│    214 │   │   │   │   self, f"Failed to establish a new connection: {e │
+│    215 │   │   │   ) from e                                             │
+│    216                                                                  │
+╰─────────────────────────────────────────────────────────────────────────╯
+NewConnectionError: <urllib3.connection.HTTPSConnection object at
+0x7fbbefb05550>: Failed to establish a new connection: [Errno 101] Network
+is unreachable
+
+The above exception was the direct cause of the following exception:
+
+╭─────────────────── Traceback (most recent call last) ───────────────────╮
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/reques │
+│ ts/adapters.py:667 in send                                              │
+│                                                                         │
+│   664 │   │   │   timeout = TimeoutSauce(connect=timeout, read=timeout) │
+│   665 │   │                                                             │
+│   666 │   │   try:                                                      │
+│ ❱ 667 │   │   │   resp = conn.urlopen(                                  │
+│   668 │   │   │   │   method=request.method,                            │
+│   669 │   │   │   │   url=url,                                          │
+│   670 │   │   │   │   body=request.body,                                │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/connectionpool.py:841 in urlopen                                      │
+│                                                                         │
+│    838 │   │   │   elif isinstance(new_e, (OSError, HTTPException)):    │
+│    839 │   │   │   │   new_e = ProtocolError("Connection aborted.", new │
+│    840 │   │   │                                                        │
+│ ❱  841 │   │   │   retries = retries.increment(                         │
+│    842 │   │   │   │   method, url, error=new_e, _pool=self, _stacktrac │
+│    843 │   │   │   )                                                    │
+│    844 │   │   │   retries.sleep()                                      │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/urllib │
+│ 3/util/retry.py:519 in increment                                        │
+│                                                                         │
+│   516 │   │                                                             │
+│   517 │   │   if new_retry.is_exhausted():                              │
+│   518 │   │   │   reason = error or ResponseError(cause)                │
+│ ❱ 519 │   │   │   raise MaxRetryError(_pool, url, reason) from reason   │
+│   520 │   │                                                             │
+│   521 │   │   log.debug("Incremented Retry for (url='%s'): %r", url, ne │
+│   522                                                                   │
+╰─────────────────────────────────────────────────────────────────────────╯
+MaxRetryError: HTTPSConnectionPool(host='huggingface.co', port=443): Max
+retries exceeded with url:
+/api/datasets/HuggingFaceH4/aime_2024/xet-read-token/2fe88a2f1091d5048c0f36
+abc874fb997b3dd99a (Caused by
+NewConnectionError('<urllib3.connection.HTTPSConnection object at
+0x7fbbefb05550>: Failed to establish a new connection: [Errno 101] Network
+is unreachable'))
+
+During handling of the above exception, another exception occurred:
+
+╭─────────────────── Traceback (most recent call last) ───────────────────╮
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/main_vllm.py:166 in vllm                                            │
+│                                                                         │
+│   163 │   model_args_dict: dict = parse_model_args(model_args)          │
+│   164 │   model_config = VLLMModelConfig(**model_args_dict, generation_ │
+│   165 │                                                                 │
+│ ❱ 166 │   pipeline = Pipeline(                                          │
+│   167 │   │   tasks=tasks,                                              │
+│   168 │   │   pipeline_parameters=pipeline_params,                      │
+│   169 │   │   evaluation_tracker=evaluation_tracker,                    │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/pipeline.py:162 in __init__                                         │
+│                                                                         │
+│   159 │   │   generation_parameters = asdict(model_config.generation_pa │
+│   160 │   │                                                             │
+│   161 │   │   self.evaluation_tracker.general_config_logger.log_model_i │
+│ ❱ 162 │   │   self._init_tasks_and_requests(tasks=tasks)                │
+│   163 │   │   self._init_random_seeds()                                 │
+│   164 │   │   # Final results                                           │
+│   165 │   │   self.final_dict: dict = None                              │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/pipeline.py:226 in _init_tasks_and_requests                         │
+│                                                                         │
+│   223 │   │   │   # review if they have to be updated.                  │
+│   224 │   │   │   if self._metric_options:                              │
+│   225 │   │   │   │   self._update_num_samples(task_dict)               │
+│ ❱ 226 │   │   │   LightevalTask.load_datasets(list(task_dict.values()), │
+│   227 │   │   │                                                         │
+│   228 │   │   │   self.evaluation_tracker.task_config_logger.log(task_d │
+│   229                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/tasks/lighteval_task.py:546 in load_datasets                        │
+│                                                                         │
+│   543 │   │   """                                                       │
+│   544 │   │                                                             │
+│   545 │   │   if dataset_loading_processes <= 1:                        │
+│ ❱ 546 │   │   │   datasets = [                                          │
+│   547 │   │   │   │   download_dataset_worker(                          │
+│   548 │   │   │   │   │   task.dataset_path,                            │
+│   549 │   │   │   │   │   task.dataset_config_name,                     │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/tasks/lighteval_task.py:547 in <listcomp>                           │
+│                                                                         │
+│   544 │   │                                                             │
+│   545 │   │   if dataset_loading_processes <= 1:                        │
+│   546 │   │   │   datasets = [                                          │
+│ ❱ 547 │   │   │   │   download_dataset_worker(                          │
+│   548 │   │   │   │   │   task.dataset_path,                            │
+│   549 │   │   │   │   │   task.dataset_config_name,                     │
+│   550 │   │   │   │   │   task.trust_dataset,                           │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/lighte │
+│ val/utils/utils.py:228 in download_dataset_worker                       │
+│                                                                         │
+│   225 │   Worker function to download a dataset from the HuggingFace Hu │
+│   226 │   Used for parallel dataset loading.                            │
+│   227 │   """                                                           │
+│ ❱ 228 │   dataset = load_dataset(                                       │
+│   229 │   │   path=dataset_path,                                        │
+│   230 │   │   name=dataset_config_name,                                 │
+│   231 │   │   data_dir=None,                                            │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/load.py:2084 in load_dataset                                         │
+│                                                                         │
+│   2081 │   │   return builder_instance.as_streaming_dataset(split=split │
+│   2082 │                                                                │
+│   2083 │   # Download and prepare data                                  │
+│ ❱ 2084 │   builder_instance.download_and_prepare(                       │
+│   2085 │   │   download_config=download_config,                         │
+│   2086 │   │   download_mode=download_mode,                             │
+│   2087 │   │   verification_mode=verification_mode,                     │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/builder.py:925 in download_and_prepare                               │
+│                                                                         │
+│    922 │   │   │   │   │   │   prepare_split_kwargs["max_shard_size"] = │
+│    923 │   │   │   │   │   if num_proc is not None:                     │
+│    924 │   │   │   │   │   │   prepare_split_kwargs["num_proc"] = num_p │
+│ ❱  925 │   │   │   │   │   self._download_and_prepare(                  │
+│    926 │   │   │   │   │   │   dl_manager=dl_manager,                   │
+│    927 │   │   │   │   │   │   verification_mode=verification_mode,     │
+│    928 │   │   │   │   │   │   **prepare_split_kwargs,                  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/builder.py:979 in _download_and_prepare                              │
+│                                                                         │
+│    976 │   │   # Generating data for all splits                         │
+│    977 │   │   split_dict = SplitDict(dataset_name=self.dataset_name)   │
+│    978 │   │   split_generators_kwargs = self._make_split_generators_kw │
+│ ❱  979 │   │   split_generators = self._split_generators(dl_manager, ** │
+│    980 │   │                                                            │
+│    981 │   │   # Checksums verification                                 │
+│    982 │   │   if verification_mode == VerificationMode.ALL_CHECKS and  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/packaged_modules/parquet/parquet.py:49 in _split_generators          │
+│                                                                         │
+│    46 │   │   if not self.config.data_files:                            │
+│    47 │   │   │   raise ValueError(f"At least one data file must be spe │
+│    48 │   │   dl_manager.download_config.extract_on_the_fly = True      │
+│ ❱  49 │   │   data_files = dl_manager.download_and_extract(self.config. │
+│    50 │   │   splits = []                                               │
+│    51 │   │   for split_name, files in data_files.items():              │
+│    52 │   │   │   if isinstance(files, str):                            │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/download/download_manager.py:326 in download_and_extract             │
+│                                                                         │
+│   323 │   │   Returns:                                                  │
+│   324 │   │   │   extracted_path(s): `str`, extracted paths of given UR │
+│   325 │   │   """                                                       │
+│ ❱ 326 │   │   return self.extract(self.download(url_or_urls))           │
+│   327 │                                                                 │
+│   328 │   def get_recorded_sizes_checksums(self):                       │
+│   329 │   │   return self._recorded_sizes_checksums.copy()              │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/download/download_manager.py:159 in download                         │
+│                                                                         │
+│   156 │   │                                                             │
+│   157 │   │   start_time = datetime.now()                               │
+│   158 │   │   with stack_multiprocessing_download_progress_bars():      │
+│ ❱ 159 │   │   │   downloaded_path_or_paths = map_nested(                │
+│   160 │   │   │   │   download_func,                                    │
+│   161 │   │   │   │   url_or_urls,                                      │
+│   162 │   │   │   │   map_tuple=True,                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:513 in map_nested                                  │
+│                                                                         │
+│   510 │   │   │   if batch_size is None or batch_size <= 0:             │
+│   511 │   │   │   │   batch_size = max(len(iterable) // num_proc + int( │
+│   512 │   │   │   iterable = list(iter_batched(iterable, batch_size))   │
+│ ❱ 513 │   │   mapped = [                                                │
+│   514 │   │   │   _single_map_nested((function, obj, batched, batch_siz │
+│   515 │   │   │   for obj in hf_tqdm(iterable, disable=disable_tqdm, de │
+│   516 │   │   ]                                                         │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:514 in <listcomp>                                  │
+│                                                                         │
+│   511 │   │   │   │   batch_size = max(len(iterable) // num_proc + int( │
+│   512 │   │   │   iterable = list(iter_batched(iterable, batch_size))   │
+│   513 │   │   mapped = [                                                │
+│ ❱ 514 │   │   │   _single_map_nested((function, obj, batched, batch_siz │
+│   515 │   │   │   for obj in hf_tqdm(iterable, disable=disable_tqdm, de │
+│   516 │   │   ]                                                         │
+│   517 │   │   if batched:                                               │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:401 in _single_map_nested                          │
+│                                                                         │
+│   398 │   │   │   │   k: _single_map_nested((function, v, batched, batc │
+│   399 │   │   │   }                                                     │
+│   400 │   │   else:                                                     │
+│ ❱ 401 │   │   │   mapped = [_single_map_nested((function, v, batched, b │
+│   402 │   │   │   if isinstance(data_struct, list):                     │
+│   403 │   │   │   │   return mapped                                     │
+│   404 │   │   │   elif isinstance(data_struct, tuple):                  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:401 in <listcomp>                                  │
+│                                                                         │
+│   398 │   │   │   │   k: _single_map_nested((function, v, batched, batc │
+│   399 │   │   │   }                                                     │
+│   400 │   │   else:                                                     │
+│ ❱ 401 │   │   │   mapped = [_single_map_nested((function, v, batched, b │
+│   402 │   │   │   if isinstance(data_struct, list):                     │
+│   403 │   │   │   │   return mapped                                     │
+│   404 │   │   │   elif isinstance(data_struct, tuple):                  │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:382 in _single_map_nested                          │
+│                                                                         │
+│   379 │   │   and isinstance(data_struct, types)                        │
+│   380 │   │   and all(not isinstance(v, (dict, types)) for v in data_st │
+│   381 │   ):                                                            │
+│ ❱ 382 │   │   return [mapped_item for batch in iter_batched(data_struct │
+│   383 │                                                                 │
+│   384 │   # Reduce logging to keep things readable in multiprocessing w │
+│   385 │   if rank is not None and logging.get_verbosity() < logging.WAR │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/py_utils.py:382 in <listcomp>                                  │
+│                                                                         │
+│   379 │   │   and isinstance(data_struct, types)                        │
+│   380 │   │   and all(not isinstance(v, (dict, types)) for v in data_st │
+│   381 │   ):                                                            │
+│ ❱ 382 │   │   return [mapped_item for batch in iter_batched(data_struct │
+│   383 │                                                                 │
+│   384 │   # Reduce logging to keep things readable in multiprocessing w │
+│   385 │   if rank is not None and logging.get_verbosity() < logging.WAR │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/download/download_manager.py:219 in _download_batched                │
+│                                                                         │
+│   216 │   │   │   │   tqdm_class=tqdm,                                  │
+│   217 │   │   │   )                                                     │
+│   218 │   │   else:                                                     │
+│ ❱ 219 │   │   │   return [                                              │
+│   220 │   │   │   │   self._download_single(url_or_filename, download_c │
+│   221 │   │   │   │   for url_or_filename in url_or_filenames           │
+│   222 │   │   │   ]                                                     │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/download/download_manager.py:220 in <listcomp>                       │
+│                                                                         │
+│   217 │   │   │   )                                                     │
+│   218 │   │   else:                                                     │
+│   219 │   │   │   return [                                              │
+│ ❱ 220 │   │   │   │   self._download_single(url_or_filename, download_c │
+│   221 │   │   │   │   for url_or_filename in url_or_filenames           │
+│   222 │   │   │   ]                                                     │
+│   223                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/download/download_manager.py:229 in _download_single                 │
+│                                                                         │
+│   226 │   │   if is_relative_path(url_or_filename):                     │
+│   227 │   │   │   # append the relative path to the base_path           │
+│   228 │   │   │   url_or_filename = url_or_path_join(self._base_path, u │
+│ ❱ 229 │   │   out = cached_path(url_or_filename, download_config=downlo │
+│   230 │   │   out = tracked_str(out)                                    │
+│   231 │   │   out.set_origin(url_or_filename)                           │
+│   232 │   │   return out                                                │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/datase │
+│ ts/utils/file_utils.py:189 in cached_path                               │
+│                                                                         │
+│    186 │   │   │   │   │   library_name="datasets",                     │
+│    187 │   │   │   │   │   library_version=__version__,                 │
+│    188 │   │   │   │   │   user_agent=get_datasets_user_agent(download_ │
+│ ❱  189 │   │   │   │   ).hf_hub_download(                               │
+│    190 │   │   │   │   │   repo_id=resolved_path.repo_id,               │
+│    191 │   │   │   │   │   repo_type=resolved_path.repo_type,           │
+│    192 │   │   │   │   │   revision=resolved_path.revision,             │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_validators.py:114 in _inner_fn                         │
+│                                                                         │
+│   111 │   │   if check_use_auth_token:                                  │
+│   112 │   │   │   kwargs = smoothly_deprecate_use_auth_token(fn_name=fn │
+│   113 │   │                                                             │
+│ ❱ 114 │   │   return fn(*args, **kwargs)                                │
+│   115 │                                                                 │
+│   116 │   return _inner_fn  # type: ignore                              │
+│   117                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/hf_api.py:5475 in hf_hub_download                             │
+│                                                                         │
+│   5472 │   │   │   # Cannot do `token = token or self.token` as token c │
+│   5473 │   │   │   token = self.token                                   │
+│   5474 │   │                                                            │
+│ ❱ 5475 │   │   return hf_hub_download(                                  │
+│   5476 │   │   │   repo_id=repo_id,                                     │
+│   5477 │   │   │   filename=filename,                                   │
+│   5478 │   │   │   subfolder=subfolder,                                 │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_validators.py:114 in _inner_fn                         │
+│                                                                         │
+│   111 │   │   if check_use_auth_token:                                  │
+│   112 │   │   │   kwargs = smoothly_deprecate_use_auth_token(fn_name=fn │
+│   113 │   │                                                             │
+│ ❱ 114 │   │   return fn(*args, **kwargs)                                │
+│   115 │                                                                 │
+│   116 │   return _inner_fn  # type: ignore                              │
+│   117                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/file_download.py:961 in hf_hub_download                       │
+│                                                                         │
+│    958 │   │   │   local_files_only=local_files_only,                   │
+│    959 │   │   )                                                        │
+│    960 │   else:                                                        │
+│ ❱  961 │   │   return _hf_hub_download_to_cache_dir(                    │
+│    962 │   │   │   # Destination                                        │
+│    963 │   │   │   cache_dir=cache_dir,                                 │
+│    964 │   │   │   # File info                                          │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/file_download.py:1112 in _hf_hub_download_to_cache_dir        │
+│                                                                         │
+│   1109 │                                                                │
+│   1110 │   Path(lock_path).parent.mkdir(parents=True, exist_ok=True)    │
+│   1111 │   with WeakFileLock(lock_path):                                │
+│ ❱ 1112 │   │   _download_to_tmp_and_move(                               │
+│   1113 │   │   │   incomplete_path=Path(blob_path + ".incomplete"),     │
+│   1114 │   │   │   destination_path=Path(blob_path),                    │
+│   1115 │   │   │   url_to_download=url_to_download,                     │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/file_download.py:1661 in _download_to_tmp_and_move            │
+│                                                                         │
+│   1658 │   │                                                            │
+│   1659 │   │   if xet_file_data is not None and is_xet_available():     │
+│   1660 │   │   │   logger.info("Xet Storage is enabled for this repo. D │
+│ ❱ 1661 │   │   │   xet_get(                                             │
+│   1662 │   │   │   │   incomplete_path=incomplete_path,                 │
+│   1663 │   │   │   │   xet_file_data=xet_file_data,                     │
+│   1664 │   │   │   │   headers=headers,                                 │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/file_download.py:547 in xet_get                               │
+│                                                                         │
+│    544 │   │   │   "Try `pip install huggingface_hub[hf_xet]` or `pip i │
+│    545 │   │   )                                                        │
+│    546 │                                                                │
+│ ❱  547 │   connection_info = refresh_xet_connection_info(file_data=xet_ │
+│    548 │                                                                │
+│    549 │   def token_refresher() -> Tuple[str, int]:                    │
+│    550 │   │   connection_info = refresh_xet_connection_info(file_data= │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_validators.py:114 in _inner_fn                         │
+│                                                                         │
+│   111 │   │   if check_use_auth_token:                                  │
+│   112 │   │   │   kwargs = smoothly_deprecate_use_auth_token(fn_name=fn │
+│   113 │   │                                                             │
+│ ❱ 114 │   │   return fn(*args, **kwargs)                                │
+│   115 │                                                                 │
+│   116 │   return _inner_fn  # type: ignore                              │
+│   117                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_xet.py:123 in refresh_xet_connection_info              │
+│                                                                         │
+│   120 │   if url.startswith("/"):                                       │
+│   121 │   │   url = f"{endpoint}{url}"                                  │
+│   122 │                                                                 │
+│ ❱ 123 │   return _fetch_xet_connection_info_with_url(url, headers)      │
+│   124                                                                   │
+│   125                                                                   │
+│   126 @validate_hf_hub_args                                             │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_validators.py:114 in _inner_fn                         │
+│                                                                         │
+│   111 │   │   if check_use_auth_token:                                  │
+│   112 │   │   │   kwargs = smoothly_deprecate_use_auth_token(fn_name=fn │
+│   113 │   │                                                             │
+│ ❱ 114 │   │   return fn(*args, **kwargs)                                │
+│   115 │                                                                 │
+│   116 │   return _inner_fn  # type: ignore                              │
+│   117                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_xet.py:193 in _fetch_xet_connection_info_with_url      │
+│                                                                         │
+│   190 │   │   [`ValueError`](https://docs.python.org/3/library/exceptio │
+│   191 │   │   │   If the Hub API response is improperly formatted.      │
+│   192 │   """                                                           │
+│ ❱ 193 │   resp = get_session().get(headers=headers, url=url, params=par │
+│   194 │   hf_raise_for_status(resp)                                     │
+│   195 │                                                                 │
+│   196 │   metadata = parse_xet_connection_info_from_headers(resp.header │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/reques │
+│ ts/sessions.py:602 in get                                               │
+│                                                                         │
+│   599 │   │   """                                                       │
+│   600 │   │                                                             │
+│   601 │   │   kwargs.setdefault("allow_redirects", True)                │
+│ ❱ 602 │   │   return self.request("GET", url, **kwargs)                 │
+│   603 │                                                                 │
+│   604 │   def options(self, url, **kwargs):                             │
+│   605 │   │   r"""Sends a OPTIONS request. Returns :class:`Response` ob │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/reques │
+│ ts/sessions.py:589 in request                                           │
+│                                                                         │
+│   586 │   │   │   "allow_redirects": allow_redirects,                   │
+│   587 │   │   }                                                         │
+│   588 │   │   send_kwargs.update(settings)                              │
+│ ❱ 589 │   │   resp = self.send(prep, **send_kwargs)                     │
+│   590 │   │                                                             │
+│   591 │   │   return resp                                               │
+│   592                                                                   │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/reques │
+│ ts/sessions.py:703 in send                                              │
+│                                                                         │
+│   700 │   │   start = preferred_clock()                                 │
+│   701 │   │                                                             │
+│   702 │   │   # Send the request                                        │
+│ ❱ 703 │   │   r = adapter.send(request, **kwargs)                       │
+│   704 │   │                                                             │
+│   705 │   │   # Total elapsed time of the request (approximately)       │
+│   706 │   │   elapsed = preferred_clock() - start                       │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/huggin │
+│ gface_hub/utils/_http.py:96 in send                                     │
+│                                                                         │
+│    93 │   │   if constants.HF_DEBUG:                                    │
+│    94 │   │   │   logger.debug(f"Send: {_curlify(request)}")            │
+│    95 │   │   try:                                                      │
+│ ❱  96 │   │   │   return super().send(request, *args, **kwargs)         │
+│    97 │   │   except requests.RequestException as e:                    │
+│    98 │   │   │   request_id = request.headers.get(X_AMZN_TRACE_ID)     │
+│    99 │   │   │   if request_id is not None:                            │
+│                                                                         │
+│ /data/cuiluyi/anaconda3/envs/openr1/lib/python3.11/site-packages/reques │
+│ ts/adapters.py:700 in send                                              │
+│                                                                         │
+│   697 │   │   │   │   # This branch is for urllib3 v1.22 and later.     │
+│   698 │   │   │   │   raise SSLError(e, request=request)                │
+│   699 │   │   │                                                         │
+│ ❱ 700 │   │   │   raise ConnectionError(e, request=request)             │
+│   701 │   │                                                             │
+│   702 │   │   except ClosedPoolError as e:                              │
+│   703 │   │   │   raise ConnectionError(e, request=request)             │
+╰─────────────────────────────────────────────────────────────────────────╯
+ConnectionError: (MaxRetryError("HTTPSConnectionPool(host='huggingface.co',
+port=443): Max retries exceeded with url:
+/api/datasets/HuggingFaceH4/aime_2024/xet-read-token/2fe88a2f1091d5048c0f36
+abc874fb997b3dd99a (Caused by
+NewConnectionError('<urllib3.connection.HTTPSConnection object at
+0x7fbbefb05550>: Failed to establish a new connection: [Errno 101] Network
+is unreachable'))"), '(Request ID: b899efd2-0fa8-44f2-a23e-00c0455ec976)')
+[rank0]:[W505 20:57:09.942502684 ProcessGroupNCCL.cpp:1496] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
